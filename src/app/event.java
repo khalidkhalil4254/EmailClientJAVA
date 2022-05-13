@@ -1,8 +1,7 @@
 package app;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class event extends gui{
 
@@ -10,14 +9,14 @@ public class event extends gui{
     ArrayList msgs,senders,dates;
     ArrayList rows;
     static String host="localhost";
-    static int count=0;
+    static int count=0,portReceive=6666,portSend=5555,portSignIn=4444,portSignUp=3333,portForget=2222,portForgetThread=7777;
+    Socket socketReceive,socketSend,socketForget;
     static String username;
 
+    //creating events handlers:-
     event(){
         t=new TOOL();
         msgs=new ArrayList<String>();
-        senders=new ArrayList<String>();
-        dates=new ArrayList<String>();
         rows=new ArrayList<String>();
         rows.add("fskadhfi|\tkjlajdsfklj|\taskkfl\n\n");
         rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
@@ -28,22 +27,43 @@ public class event extends gui{
         rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
         mailBox_mailing_tbl.setText(Arrays.toString(rows.toArray()));
 
-
+        try {
+            socketSend=new Socket(host,portSend);
+        }catch (Exception e){}
 
         Thread receive=new Thread(()->{
+
             while(true){
                 try {
-                    String sender=t.receive(new ServerSocket(5555).accept());
-                    String msg=t.receive(new ServerSocket(5555).accept());
-                    String date=t.receive(new ServerSocket(5555).accept());
-                    if(!msg.equals("") && !msg.equals(null)){
+                    String sender=t.receive(new Socket(host,portReceive));
+                    String receiver=t.receive(new Socket(host,portReceive));
+                    String msg=t.receive(new Socket(host,portReceive));
+
+                    if(!msg.equals("")){
+                        if(receiver.equals(username)){
                         if(!msgs.contains(msg)){
-                            rows.add(sender+"\t"+msg+"\t"+date);
-                            mailBox_mailing_tbl.setText(Arrays.toString(rows.toArray()));
+                            msgs.add("Sender:"+sender+"\n\n\t"+"Mail:"+msg+"\n\n\n\n");
+                            mailBox_mailing_tbl.setText(Arrays.toString(msgs.toArray()));
                         }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                }
+
+                } catch (Exception e) {}
+            }
+        });
+        receive.start();
+
+
+        Thread forget=new Thread(()->{
+            while(true){
+                try {
+                    String pass=t.receive(new Socket(host,portForgetThread));
+                    System.out.println(pass);
+                    if(pass!=""){
+                        password_forget_txt.setText(pass);
+                    }
+                }catch (Exception er){
+                    System.out.println("forget error:"+er);
                 }
             }
         });
@@ -51,32 +71,28 @@ public class event extends gui{
 
         //creating events handlers:-
         SignIn_btn.addActionListener((e)->{
-//            receive.start();
             String user=username_signIn_txt.getText();
-            String pass=password_signIn_txt.getPassword().toString();
-//             geeks = new ArrayList<String[] >();
-//            try {
-//                t.send(new Socket(host,5555),user);
-//                t.send(new Socket(host,5555),pass);
-//            } catch (Exception ex) {ex.printStackTrace();}
-//
-//            try {
-//                String res=t.receive(new ServerSocket(5555).accept());
-//                if(res=="yes"){
-                from_mailing_txt.setText(user);
-//                    mailing_frm.setVisible(true);
-//                    signIn_frm.setVisible(false);
-//                }else {
-//                    receive.stop();
-//                }
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
+            String pass=new String(password_signIn_txt.getPassword());
 
+            try {
+                //sending the login info to the server:-
+                t.send(new Socket(host,portSignIn),user);
+                t.send(new Socket(host,portSignIn),pass);
 
-            mailing_frm.setVisible(true);
+                //waiting and receiving the response from the server:-
+                String res=t.receive(new Socket(host,portSignIn));
+                if(res.equals("yes")){
+                    username=user;
+                    from_mailing_txt.setText(username);
+                    mailing_frm.setVisible(true);
                     signIn_frm.setVisible(false);
-
+                    username_signIn_txt.setText("");
+                    password_signIn_txt.setText("");
+                }
+            } catch (Exception ex) {
+                //error handling in gui:-
+                ex.printStackTrace();
+            }
 
         });
 
@@ -86,38 +102,38 @@ public class event extends gui{
         });
 
         forget_btn.addActionListener((e)->{
-
+            forget_frm.setVisible(true);
+            signIn_frm.setVisible(false);
         });
 
         signOut_mailing_btn.addActionListener((e)->{
-            msgs.clear();
+            rows.clear();
             mailing_frm.setVisible(false);
             signIn_frm.setVisible(true);
         });
 
         signUp_signUp_btn.addActionListener((e)->{
+
+            try{
             String user=username_signUp_txt.getText();
-            String pass=password_signUp_txt.getPassword().toString();
+            String pass=new String(password_signUp_txt.getPassword());
 
-            try {
-                t.send(new Socket(host,5555),user);
-                t.send(new Socket(host,5555),pass);
-            } catch (Exception ex) {ex.printStackTrace();}
-
-            try {
-                String res=t.receive(new ServerSocket(5555).accept());
-                if(res=="yes"){
+                System.out.println(user+" "+pass);
+                t.send(new Socket(host,portSignUp),user);
+                t.send(new Socket(host,portSignUp),pass);
+                String res=t.receive(new Socket(host,portSignUp));
+                System.out.println(res);
+                if(res.equals("yes")){
                     signUp_frm.setVisible(false);
                     signIn_frm.setVisible(true);
-                }else {
-
+                }else if(res=="no"){
+                    System.out.println("invalid Info!!!");
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (Exception ex) {
+                System.out.println("signUp error:"+ex);
             }
 
         });
-
 
 
         send_signIn_btn.addActionListener((e)->{
@@ -126,13 +142,38 @@ public class event extends gui{
             String msg=msg_mailing_txt.getText();
             if(!sender.equals("") && !receiver.equals("") && !msg.equals("")){
                 try {
-                    t.send(new Socket(host,5555),sender);
-                    t.send(new Socket(host,5555),receiver);
-                    t.send(new Socket(host,5555),msg);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                    t.send(new Socket(host,portSend),sender);
+                    t.send(new Socket(host,portSend),receiver);
+                    t.send(new Socket(host,portSend),msg);
+                    System.out.println(sender+" "+receiver+" "+msg);
+                } catch (Exception ex) {
+                    System.out.println("Send error:"+ex);
+                }
+                to_mailing_txt.setText("");
+                msg_mailing_txt.setText("");
+            }
+        });
+
+
+        submit_forget_btn.addActionListener((e)->{
+            if(count==0){
+                forget.start();
+            }
+            String user=username_forget_txt.getText();
+            if(!user.equals("")){
+                try {
+                    t.send(new Socket(host,portForget),user);
+                } catch (Exception ex) {
+                    System.out.println("forget error:"+ex);
                 }
             }
+            username_forget_txt.setText("");
+            count++;
+        });
+
+        back_forget_btn.addActionListener((e)->{
+            forget_frm.setVisible(false);
+            signIn_frm.setVisible(true);
         });
 
 

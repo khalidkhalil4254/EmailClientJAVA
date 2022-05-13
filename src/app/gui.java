@@ -7,11 +7,11 @@ import java.util.*;
 public class gui {
     //creating required components:-
     JFrame signIn_frm,signUp_frm,mailing_frm,forget_frm;
-    JLabel username_signIn_lbl,password_signIn_lbl,mail_mailing_lbl,send_mailing_lbl,signIn_lbl,from_mailing_lbl,to_mailing_lbl,msg_mailing_lbl,signUp_lbl,username_signUp_lbl,password_signUp_lbl,forget_lbl,err_signIn,err_signUp,err_mail,err_forget;
-    JTextField username_signIn_txt,username_signUp_txt,from_mailing_txt,to_mailing_txt,username_forget_txt;
+    JLabel username_signIn_lbl,password_signIn_lbl,mail_mailing_lbl,send_mailing_lbl,signIn_lbl,from_mailing_lbl,to_mailing_lbl,msg_mailing_lbl,signUp_lbl,username_signUp_lbl,password_signUp_lbl,forget_lbl,username_forget_lbl,password_forget_lbl,err_signIn,err_signUp,err_mail,err_forget;
+    JTextField username_signIn_txt,password_forget_txt,username_signUp_txt,from_mailing_txt,to_mailing_txt,username_forget_txt;
     JTextArea msg_mailing_txt,mailBox_mailing_tbl;
-    JPasswordField password_signIn_txt,password_signUp_txt,password_forget_txt;
-    JButton SignIn_btn,SignUp_btn,forget_btn,send_signIn_btn,signOut_mailing_btn,signUp_signUp_btn,submit_forget_btn;
+    JPasswordField password_signIn_txt,password_signUp_txt;
+    JButton SignIn_btn,SignUp_btn,forget_btn,send_signIn_btn,signOut_mailing_btn,signUp_signUp_btn,submit_forget_btn,back_forget_btn;
     ArrayList<String[]> geeks=new ArrayList() ;
 
     gui(){
@@ -88,18 +88,47 @@ public class gui {
 
 
 
+        //creating forget components:-
+        forget_lbl=new JLabel("Forget-password?");
+        forget_lbl.setFont(new Font("segue UI",Font.BOLD,18));
+        forget_lbl.setBounds(30,30,180,30);
+
+        username_forget_lbl=new JLabel("Username : ");
+        username_forget_lbl.setFont(new Font("segue UI",Font.PLAIN,16));
+        username_forget_lbl.setBounds(50,100,100,30);
+
+        username_forget_txt=new JTextField();
+        username_forget_txt.setBounds(165,100,250,30);
+
+        password_forget_lbl=new JLabel("Your password : ");
+        password_forget_lbl.setFont(new Font("segue UI",Font.PLAIN,16));
+        password_forget_lbl.setBounds(50,150,180,30);
+
+        password_forget_txt=new JTextField();
+        password_forget_txt.setEditable(false);
+        password_forget_txt.setFont(new Font("verdana",Font.PLAIN,16));
+        password_forget_txt.setBounds(165,150,250,30);
+
+        submit_forget_btn=new JButton("Submit");
+        submit_forget_btn.setFont(new Font("segue UI",Font.PLAIN,16));
+        submit_forget_btn.setBounds(300,250,120,50);
+
+        back_forget_btn=new JButton("Back");
+        back_forget_btn.setFont(new Font("segue UI",Font.PLAIN,16));
+        back_forget_btn.setBounds(30,250,120,50);
 
         //adding forget components:-
-
-
-
-
+        forget_frm.add(forget_lbl);
+        forget_frm.add(username_forget_txt);
+        forget_frm.add(submit_forget_btn);
+        forget_frm.add(username_forget_lbl);
+        forget_frm.add(password_forget_lbl);
+        forget_frm.add(password_forget_txt);
+        forget_frm.add(back_forget_btn);
 
 
 
         //creating signUp components:-
-
-
         signUp_lbl=new JLabel("SignUp:-");
         signUp_lbl.setFont(new Font("verdana",Font.BOLD,25));
         signUp_lbl.setBounds(30,20,200,30);
