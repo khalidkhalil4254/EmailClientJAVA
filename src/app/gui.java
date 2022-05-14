@@ -1,8 +1,6 @@
 package app;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.*;
 
 public class gui {
     //creating required components:-
@@ -12,7 +10,6 @@ public class gui {
     JTextArea msg_mailing_txt,mailBox_mailing_tbl;
     JPasswordField password_signIn_txt,password_signUp_txt;
     JButton SignIn_btn,SignUp_btn,forget_btn,send_signIn_btn,signOut_mailing_btn,signUp_signUp_btn,submit_forget_btn,back_forget_btn;
-    ArrayList<String[]> geeks=new ArrayList() ;
 
     gui(){
 
@@ -47,12 +44,17 @@ public class gui {
 
 
         //creating signIn components:-
+        err_signIn=new JLabel("");
+        err_signIn.setFont(new Font("segueUI",Font.BOLD,15));
+        err_signIn.setForeground(Color.RED);
+        err_signIn.setBounds(250,200,150,30);
+
         signIn_lbl=new JLabel("signIn:-");
-        signIn_lbl.setFont(new Font("segoeUI",Font.BOLD,20));
+        signIn_lbl.setFont(new Font("segueUI",Font.BOLD,20));
         signIn_lbl.setBounds(30,20,120,30);
 
         username_signIn_lbl=new JLabel("username : ");
-        username_signIn_lbl.setFont(new Font("segoeUI",Font.PLAIN,15));
+        username_signIn_lbl.setFont(new Font("segueUI",Font.PLAIN,15));
         username_signIn_lbl.setBounds(40,90,120,28);
 
         username_signIn_txt=new JTextField();
@@ -61,7 +63,7 @@ public class gui {
 
 
         password_signIn_lbl=new JLabel("password : ");
-        password_signIn_lbl.setFont(new Font("segoeUI",Font.PLAIN,15));
+        password_signIn_lbl.setFont(new Font("segueUI",Font.PLAIN,15));
         password_signIn_lbl.setBounds(40,150,120,28);
 
         password_signIn_txt=new JPasswordField();
@@ -77,6 +79,7 @@ public class gui {
         forget_btn.setBounds(240,400,120,50);
 
         //adding sigIn components:-
+        signIn_frm.add(err_signIn);
         signIn_frm.add(signIn_lbl);
         signIn_frm.add(username_signIn_lbl);
         signIn_frm.add(username_signIn_txt);
@@ -161,11 +164,11 @@ public class gui {
 
         //creating mailing components:-
         mail_mailing_lbl=new JLabel("MailBox:-");
-        mail_mailing_lbl.setFont(new Font("segoe UI",Font.BOLD,25));
+        mail_mailing_lbl.setFont(new Font("segueUI",Font.BOLD,25));
         mail_mailing_lbl.setBounds(30,360,120,30);
 
         send_mailing_lbl=new JLabel("Send:-");
-        send_mailing_lbl.setFont(new Font("segoe UI",Font.BOLD,25));
+        send_mailing_lbl.setFont(new Font("segueUI",Font.BOLD,25));
         send_mailing_lbl.setBounds(30,30,120,30);
 
         from_mailing_lbl=new JLabel("FROM : ");

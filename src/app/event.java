@@ -1,31 +1,23 @@
 package app;
-import java.io.*;
+import javax.swing.*;
 import java.net.*;
 import java.util.*;
 
 public class event extends gui{
 
     TOOL t;
-    ArrayList msgs,senders,dates;
-    ArrayList rows;
+    ArrayList msgs,mail;
+
     static String host="localhost";
     static int count=0,portReceive=6666,portSend=5555,portSignIn=4444,portSignUp=3333,portForget=2222,portForgetThread=7777;
-    Socket socketReceive,socketSend,socketForget;
+    Socket socketSend;
     static String username;
 
     //creating events handlers:-
     event(){
         t=new TOOL();
         msgs=new ArrayList<String>();
-        rows=new ArrayList<String>();
-        rows.add("fskadhfi|\tkjlajdsfklj|\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        rows.add("fskadhfi\tkjlajdsfklj\taskkfl\n\n");
-        mailBox_mailing_tbl.setText(Arrays.toString(rows.toArray()));
+        mail=new ArrayList<String>();
 
         try {
             socketSend=new Socket(host,portSend);
@@ -40,14 +32,14 @@ public class event extends gui{
                     String msg=t.receive(new Socket(host,portReceive));
 
                     if(!msg.equals("")){
-                        if(receiver.equals(username)){
+                        if(receiver.equals(username_signIn_txt.getText())){
                         if(!msgs.contains(msg)){
-                            msgs.add("Sender:"+sender+"\n\n\t"+"Mail:"+msg+"\n\n\n\n");
-                            mailBox_mailing_tbl.setText(Arrays.toString(msgs.toArray()));
+                            msgs.add(msg);
+                            mail.add("Sender:"+sender+"\n\n\t"+"Mail:"+msg+"\n\n\n\n");
+                            mailBox_mailing_tbl.setText(Arrays.toString(mail.toArray()));
                         }
                     }
                 }
-
                 } catch (Exception e) {}
             }
         });
@@ -59,7 +51,7 @@ public class event extends gui{
                 try {
                     String pass=t.receive(new Socket(host,portForgetThread));
                     System.out.println(pass);
-                    if(pass!=""){
+                    if(!pass.equals("")){
                         password_forget_txt.setText(pass);
                     }
                 }catch (Exception er){
@@ -73,7 +65,7 @@ public class event extends gui{
         SignIn_btn.addActionListener((e)->{
             String user=username_signIn_txt.getText();
             String pass=new String(password_signIn_txt.getPassword());
-
+        if(!user.equals("") && !pass.equals("")){
             try {
                 //sending the login info to the server:-
                 t.send(new Socket(host,portSignIn),user);
@@ -81,18 +73,23 @@ public class event extends gui{
 
                 //waiting and receiving the response from the server:-
                 String res=t.receive(new Socket(host,portSignIn));
+                System.out.println(res);
                 if(res.equals("yes")){
                     username=user;
                     from_mailing_txt.setText(username);
                     mailing_frm.setVisible(true);
                     signIn_frm.setVisible(false);
-                    username_signIn_txt.setText("");
                     password_signIn_txt.setText("");
+                }else if(res.equals("no")){
+                    JOptionPane.showMessageDialog(err_signIn, "Invalid SignIn!");
                 }
             } catch (Exception ex) {
                 //error handling in gui:-
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(err_signIn, "No SignIn!");
             }
+        }else {
+            JOptionPane.showMessageDialog(err_signIn, "Please type a valid logIn");
+        }
 
         });
 
@@ -107,7 +104,12 @@ public class event extends gui{
         });
 
         signOut_mailing_btn.addActionListener((e)->{
-            rows.clear();
+            msgs.clear();
+            mail.clear();
+            username="";
+            username_signIn_txt.setText("");
+            mailBox_mailing_tbl.setText("");
+            from_mailing_txt.setText("");
             mailing_frm.setVisible(false);
             signIn_frm.setVisible(true);
         });
@@ -126,7 +128,7 @@ public class event extends gui{
                 if(res.equals("yes")){
                     signUp_frm.setVisible(false);
                     signIn_frm.setVisible(true);
-                }else if(res=="no"){
+                }else if(res.equals("no")){
                     System.out.println("invalid Info!!!");
                 }
             } catch (Exception ex) {
@@ -142,6 +144,7 @@ public class event extends gui{
             String msg=msg_mailing_txt.getText();
             if(!sender.equals("") && !receiver.equals("") && !msg.equals("")){
                 try {
+                    Thread.sleep(200);
                     t.send(new Socket(host,portSend),sender);
                     t.send(new Socket(host,portSend),receiver);
                     t.send(new Socket(host,portSend),msg);
