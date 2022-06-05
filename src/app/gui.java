@@ -10,6 +10,7 @@ public class gui {
     JTextArea msg_mailing_txt,mailBox_mailing_tbl;
     JPasswordField password_signIn_txt,password_signUp_txt;
     JButton SignIn_btn,SignUp_btn,forget_btn,send_signIn_btn,signOut_mailing_btn,signUp_signUp_btn,submit_forget_btn,back_forget_btn;
+    JButton uploadFile_btn;
 
     gui(){
 
@@ -200,7 +201,7 @@ public class gui {
         signOut_mailing_btn.setBounds(540,860,120,50);
 
         send_signIn_btn=new JButton("Send");
-        send_signIn_btn.setBounds(820,280,120,50);
+        send_signIn_btn.setBounds(820,200,120,50);
 
 
         mailBox_mailing_tbl=new JTextArea();
@@ -209,6 +210,11 @@ public class gui {
         JScrollPane scroll1 = new JScrollPane (mailBox_mailing_tbl,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scroll1.setBounds(100,420,1000,420);
+
+
+        uploadFile_btn=new JButton("Upload File");
+        uploadFile_btn.setBounds(820,280,180,50);
+
 
         //adding mailing components:-
         mailing_frm.add(mail_mailing_lbl);
@@ -222,6 +228,7 @@ public class gui {
         mailing_frm.add(send_signIn_btn);
         mailing_frm.add(scroll);
         mailing_frm.add(scroll1);
+        mailing_frm.add(uploadFile_btn);
 
 
         //run the app

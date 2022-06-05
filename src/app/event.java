@@ -1,5 +1,6 @@
 package app;
 import javax.swing.*;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -7,9 +8,10 @@ public class event extends gui{
 
     TOOL t;
     ArrayList msgs,mail;
+    Socket fileSocket;
 
-    static String host="localhost";
-    static int count=0,portReceive=6666,portSend=5555,portSignIn=4444,portSignUp=3333,portForget=2222,portForgetThread=7777;
+    static String host="192.168.1.8";
+    static int count=0,portReceive=6666,portSend=5555,portSignIn=8080,portSignUp=3333,portForget=2222,portForgetThread=7777,portFile=5432;
     Socket socketSend;
     static String username;
 
@@ -120,6 +122,8 @@ public class event extends gui{
             String user=username_signUp_txt.getText();
             String pass=new String(password_signUp_txt.getPassword());
 
+
+            if(user.contains("@nctu.edu.eg") || user.contains("@NCTU.EDU.EG")){
                 System.out.println(user+" "+pass);
                 t.send(new Socket(host,portSignUp),user);
                 t.send(new Socket(host,portSignUp),pass);
@@ -131,6 +135,11 @@ public class event extends gui{
                 }else if(res.equals("no")){
                     System.out.println("invalid Info!!!");
                 }
+            }else {
+                JOptionPane.showMessageDialog(signUp_frm, "Please add  @nctu.edu.eg  to username!",
+                        "Incomplete-Data!", JOptionPane.ERROR_MESSAGE);
+            }
+
             } catch (Exception ex) {
                 System.out.println("signUp error:"+ex);
             }
@@ -178,6 +187,23 @@ public class event extends gui{
             forget_frm.setVisible(false);
             signIn_frm.setVisible(true);
         });
+
+
+
+
+
+        uploadFile_btn.addActionListener((e)->{
+            JFileChooser fileChoose=new JFileChooser();
+            int res=fileChoose.showOpenDialog(null);
+            if(res==JFileChooser.APPROVE_OPTION){
+                File file=new File(fileChoose.getSelectedFile().getAbsolutePath());
+                System.out.println(file);
+                uploadFile_btn.setText(file.getAbsolutePath());
+
+            }
+        });
+
+
 
 
     }

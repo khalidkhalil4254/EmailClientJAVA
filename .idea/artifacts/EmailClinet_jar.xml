@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="EmailClinet:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/EmailClinet_jar</output-path>
+    <root id="archive" name="xcrown.jar">
+      <element id="module-output" name="xcrown" />
+    </root>
+  </artifact>
+</component>
