@@ -57,6 +57,13 @@ public class TOOL {
         return s;
     }
 
+    void sendBytes(Socket socket,byte msg[]) throws IOException{
+        DataOutputStream out=new DataOutputStream(socket.getOutputStream());
+        out.write(msg);
+        out.flush();
+        out.close();
+    }
+
     ServerSocket createServerSocket(int port){
         ServerSocket ss=null;
         try{
@@ -82,6 +89,19 @@ public class TOOL {
             res=in.readUTF();
         return res;
     }
+
+
+    byte[]receiveBytes(Socket socket){
+        byte[]arr = new byte[0];
+        try{
+            DataInputStream in=new DataInputStream(socket.getInputStream());
+            arr=in.readAllBytes();
+        }catch (Exception er){
+            er.printStackTrace();
+        }
+        return arr;
+    }
+
 
     void closeEveryThing(ServerSocket ss,Socket s,DataInputStream dIN,DataOutputStream dOUT){
         try {

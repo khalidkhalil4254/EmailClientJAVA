@@ -2,9 +2,13 @@ package app;
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class event extends gui{
+
+
+    long start = System.currentTimeMillis();
 
     TOOL t;
     ArrayList msgs,mail;
@@ -14,6 +18,21 @@ public class event extends gui{
     static int count=0,portReceive=6666,portSend=5555,portSignIn=8080,portSignUp=3333,portForget=2222,portForgetThread=7777,portFile=5432;
     Socket socketSend;
     static String username;
+
+
+    public static byte[] getFileBytes(File file) {
+        byte[] arr = new byte[0];
+        try{
+            FileInputStream fl = new FileInputStream(file);
+            arr = new byte[(int)file.length()];
+            fl.read(arr);
+            fl.close();
+        }catch (Exception er){
+
+        }
+        return arr;
+    }
+
 
     //creating events handlers:-
     event(){
@@ -151,7 +170,22 @@ public class event extends gui{
             String sender=from_mailing_txt.getText();
             String receiver=to_mailing_txt.getText();
             String msg=msg_mailing_txt.getText();
+
             if(!sender.equals("") && !receiver.equals("") && !msg.equals("")){
+            if(receiver.contains(",")){
+                String arr[]=receiver.split(",");
+                for(String a:arr){
+                    try {
+                        Thread.sleep(500);
+                        t.send(new Socket(host,portSend),sender);
+                        t.send(new Socket(host,portSend),a);
+                        t.send(new Socket(host,portSend),msg);
+                        System.out.println(sender+" "+a+" "+msg);
+                    } catch (Exception ex) {
+                        System.out.println("Send error:"+ex);
+                    }
+                }
+            }else {
                 try {
                     Thread.sleep(200);
                     t.send(new Socket(host,portSend),sender);
@@ -161,6 +195,8 @@ public class event extends gui{
                 } catch (Exception ex) {
                     System.out.println("Send error:"+ex);
                 }
+            }
+
                 to_mailing_txt.setText("");
                 msg_mailing_txt.setText("");
             }
@@ -200,10 +236,22 @@ public class event extends gui{
                 System.out.println(file);
                 uploadFile_btn.setText(file.getAbsolutePath());
 
+
+                byte fileBytes[]=getFileBytes(file);
+
+                TOOL tool=new TOOL();
+                try {
+                    tool.sendBytes(new Socket(host,portFile),fileBytes);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
+        long end = System.currentTimeMillis();
 
+
+        System.out.println("benchmarks:"+(end - start));
 
 
     }
