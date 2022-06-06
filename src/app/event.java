@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.*;
 
 public class event extends gui{
@@ -15,7 +16,7 @@ public class event extends gui{
     Socket fileSocket;
 
     static String host="192.168.1.8";
-    static int count=0,portReceive=6666,portSend=5555,portSignIn=8080,portSignUp=3333,portForget=2222,portForgetThread=7777,portFile=5432;
+    static int count=0,portReceive=6666,portSend=5555,portSignIn=8080,portSignUp=3333,portForget=2222,portForgetThread=7777,portFile=5431;
     Socket socketSend;
     static String username;
 
@@ -170,6 +171,7 @@ public class event extends gui{
             String sender=from_mailing_txt.getText();
             String receiver=to_mailing_txt.getText();
             String msg=msg_mailing_txt.getText();
+            msg+="\nsent in:"+LocalTime.now().getHour()+":"+LocalTime.now().getMinute();
 
             if(!sender.equals("") && !receiver.equals("") && !msg.equals("")){
             if(receiver.contains(",")){
